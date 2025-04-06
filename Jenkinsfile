@@ -33,3 +33,24 @@ pipeline {
         stage("Run tests for TestProject1") {
             steps {
                 bat 'dotnet test TestProject1/TestProject1.csproj --logger "trx;LogFileName=TestResults.trx"'
+            }
+        }
+
+        stage("Run tests for TestProject2") {
+            steps {
+                bat 'dotnet test TestProject2/TestProject2.csproj --logger "trx;LogFileName=TestResults.trx"'
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/TestResults/*.trx', allowEmptyArchive: true
+            // Ако ползваш MSTest плъгин:
+            // step([
+            //     $class: 'MSTestPublisher',
+            //     testResultsFile: '**/TestResults/*.trx'
+            // ])
+        }
+    }
+}
